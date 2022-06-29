@@ -3,19 +3,19 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, password=None):
-        if not username:
+    def create_user(self, email, password=None):
+        if not email:
             raise ValueError("Users must have an username")
         user = self.model(
-            username=username,
+            email=email,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     # python manage.py createsuperuser 사용 시 해당 함수가 사용됨
-    def create_superuser(self, username, password=None):
-        user = self.create_user(username=username, password=password)
+    def create_superuser(self, email, password=None):
+        user = self.create_user(email=email, password=password)
         user.is_admin = True
         user.save(using=self._db)
         return user
@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.username
+        return self.email
 
     def has_perm(self, perm, obj=None):
         return True

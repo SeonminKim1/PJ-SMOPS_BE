@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import Category, ImageShape, Log, Product
 
-# Register your models here.
+admin.site.register(Category)
+admin.site.register(ImageShape)
+admin.site.register(Log)
+admin.site.register(Product)
