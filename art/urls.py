@@ -1,7 +1,7 @@
 from django.urls import path
 from art import views
 
-# mygalley/
+# mygallery/
 urlpatterns = [
     path('', views.MyGalleryAPIView.as_view()),
     # path('', views.MyGalleryAPIView.as_view()),    

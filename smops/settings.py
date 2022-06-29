@@ -84,7 +84,6 @@ WSGI_APPLICATION = 'smops.wsgi.application'
 # =========== Setting Key by my_settings.py ===========
 
 # MYSQL 안쓸꺼면 아래 풀어서 쓰면 됩니다.
-<<<<<<< Updated upstream
 DATABASES = my_settings.DATABASE
 '''
 DATABASES = {
@@ -93,17 +92,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }'''
-=======
-DATABASES = my_setting.DATABASE
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
->>>>>>> Stashed changes
 # =====================================================
 
 # Password validation

@@ -9,19 +9,22 @@ from rest_framework import status
 
 
 
-# mygalley/
+# mygallery/
 class MyGalleryAPIView(APIView):
     # 현재 접속한 유저가 가지고 있는 그림들
     def get(self, request):
+        print("mygallery/ - GET 메서드 도착!")
         # # 필터적용 하여 시리얼라이저에 전달
         # price = request.query_params.get('price', '')
         # size = request.query_params.get('size', '')
-        products = ProductModel.objects.filter(owner_user=request.user.id)
+        # products = ProductModel.objects.filter(owner_user_id="1")
+        products = ProductModel.objects.all()
+        print(products)
         
-        return Response(MyGallerySerializer(products, many=True), status=status.HTTP_200_OK)
+        return Response(MyGallerySerializer(products, many=True).data, status=status.HTTP_200_OK)
     
     
-# mygalley/<product_id>
+# mygallery/<product_id>
 class MyGalleryInfoAPIView(APIView):
     # 게시물 상세보기(그림, 생성정보, 구매정보)
     def get(self, request, product_id):
