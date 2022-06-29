@@ -14,29 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-<<<<<<< HEAD
 from django.urls import path, include
-=======
-from django.urls import path
-from user.views import TestUserView
-from art.views import TestProductView
->>>>>>> e370dfcc22eb4e3eaa5fa9c85884cbff74c47a88
 
 urlpatterns = [
-<<<<<<< HEAD
     path('admin/', admin.site.urls),
     path('mygallery/', include("art.urls"))
-=======
-    path("admin/", admin.site.urls),
-<<<<<<< HEAD
->>>>>>> 31e2d83591775702a64ebd0c049237ba0870fce0
-=======
-
-
-
-
-    ## Test 용 URL 입니다.
-    path("get_users/", TestUserView.as_view()),
-    path('get_products/', TestProductView.as_view()),
->>>>>>> e370dfcc22eb4e3eaa5fa9c85884cbff74c47a88
 ]

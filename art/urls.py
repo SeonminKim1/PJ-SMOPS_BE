@@ -5,5 +5,5 @@ from art import views
 urlpatterns = [
     path('', views.MyGalleryAPIView.as_view()),
     # path('', views.MyGalleryAPIView.as_view()),    
-    path('<art_id>', views.MyGalleryInfoAPIView.as_view()),    
+    path('<product_id>', views.MyGalleryInfoAPIView.as_view()),    
 ]

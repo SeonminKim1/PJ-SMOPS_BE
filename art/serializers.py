@@ -36,7 +36,7 @@ class MyGallerySerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = ["created_user", "owner_user",
                   "img_path", "img_shape",
-                  "category", "title", "discription",
+                  "category", "title", "description",
                   "price", "is_selling", "created_date","log"]
         
         
