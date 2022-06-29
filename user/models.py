@@ -24,9 +24,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    email = models.EmailField("이메일", max_lenth=200, unique=True)
-    password = models.CharField("패스워드", max_lenth=200)
-    fullname = models.CharField("실명”" max_lenth=30)
+    email = models.EmailField("이메일", max_length=200, unique=True)
+    password = models.CharField("패스워드", max_length=200)
+    fullname = models.CharField("실명", max_length=30)
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -48,3 +48,6 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+    class Meta:
+        db_table="USER"
