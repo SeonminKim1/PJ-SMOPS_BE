@@ -34,7 +34,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,17 +45,6 @@ INSTALLED_APPS = [
     'user',
     'ai',
     'art',
-=======
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "user",
-    "ai",
-    "art",
->>>>>>> 31e2d83591775702a64ebd0c049237ba0870fce0
 ]
 
 MIDDLEWARE = [
@@ -146,7 +134,6 @@ STATIC_URL = "static/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-<<<<<<< HEAD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
@@ -163,6 +150,3 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
     ]
 }
-=======
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
->>>>>>> 31e2d83591775702a64ebd0c049237ba0870fce0

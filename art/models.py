@@ -49,7 +49,7 @@ class Product(models.Model):
     created_date = models.DateTimeField("생성날짜", auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
     class Meta:
         db_table = "PRODUCT"
