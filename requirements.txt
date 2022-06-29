@@ -1,6 +1,7 @@
 # Essential Package
 django
 djangorestframework
+mysqlclient
 
 # Improve code quality Tool
 black
