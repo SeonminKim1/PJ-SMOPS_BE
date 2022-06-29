@@ -1,3 +1,4 @@
+from urllib import response
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -46,4 +47,5 @@ class MyGalleryInfoAPIView(APIView):
         except ProductModel.DoesNotExist:
             return Response({"error" : "없는 상품 입니다."},
                                     status=status.HTTP_400_BAD_REQUEST)
-        return Response(my_gallery_serializer, status=status.HTTP_200_OK)
+        return Response()
+        # return Response(my_gallery_serializer, status=status.HTTP_200_OK)
