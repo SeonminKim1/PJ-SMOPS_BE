@@ -1,2 +1,7 @@
+# Essential Package
 django
 djangorestframework
+
+# Improve code quality Tool
+black
+isort
