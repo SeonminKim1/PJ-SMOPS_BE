@@ -1,44 +1,49 @@
 """Neural style transfer (https://arxiv.org/abs/1508.06576) in PyTorch."""
 
 import copy
-from dataclasses import dataclass
-from functools import partial
 import time
 import warnings
+from dataclasses import dataclass
+from functools import partial
 
 import numpy as np
-from PIL import Image
 import torch
-from torch import optim, nn
+from PIL import Image
+from torch import nn, optim
 from torch.nn import functional as F
 from torchvision import models, transforms
 from torchvision.transforms import functional as TF
 
 
 class VGGFeatures(nn.Module):
-    poolings = {'max': nn.MaxPool2d, 'average': nn.AvgPool2d, 'l2': partial(nn.LPPool2d, 2)}
-    pooling_scales = {'max': 1., 'average': 2., 'l2': 0.78}
+    poolings = {
+        "max": nn.MaxPool2d,
+        "average": nn.AvgPool2d,
+        "l2": partial(nn.LPPool2d, 2),
+    }
+    pooling_scales = {"max": 1.0, "average": 2.0, "l2": 0.78}
 
-    def __init__(self, layers, pooling='max'):
+    def __init__(self, layers, pooling="max"):
         super().__init__()
         self.layers = sorted(set(layers))
 
         # The PyTorch pre-trained VGG-19 expects sRGB inputs in the range [0, 1] which are then
         # normalized according to this transform, unlike Simonyan et al.'s original model.
-        self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                              std=[0.229, 0.224, 0.225])
+        self.normalize = transforms.Normalize(
+            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
+        )
 
         # The PyTorch pre-trained VGG-19 has different parameters from Simonyan et al.'s original
         # model.
-        self.model = models.vgg19(pretrained=True).features[:self.layers[-1] + 1]
-        self.devices = [torch.device('cpu')] * len(self.model)
+        self.model = models.vgg19(pretrained=True).features[: self.layers[-1] + 1]
+        self.devices = [torch.device("cpu")] * len(self.model)
 
         # Reduces edge artifacts.
-        self.model[0] = self._change_padding_mode(self.model[0], 'replicate')
+        self.model[0] = self._change_padding_mode(self.model[0], "replicate")
 
         pool_scale = self.pooling_scales[pooling]
         for i, layer in enumerate(self.model):
-            if pooling != 'max' and isinstance(layer, nn.MaxPool2d):
+            if pooling != "max" and isinstance(layer, nn.MaxPool2d):
                 # Changing the pooling type from max results in the scale of activations
                 # changing, so rescale them. Gatys et al. (2015) do not do this.
                 self.model[i] = Scale(self.poolings[pooling](2), pool_scale)
@@ -48,9 +53,14 @@ class VGGFeatures(nn.Module):
 
     @staticmethod
     def _change_padding_mode(conv, padding_mode):
-        new_conv = nn.Conv2d(conv.in_channels, conv.out_channels, conv.kernel_size,
-                             stride=conv.stride, padding=conv.padding,
-                             padding_mode=padding_mode)
+        new_conv = nn.Conv2d(
+            conv.in_channels,
+            conv.out_channels,
+            conv.kernel_size,
+            stride=conv.stride,
+            padding=conv.padding,
+            padding_mode=padding_mode,
+        )
         with torch.no_grad():
             new_conv.weight.copy_(conv.weight)
             new_conv.bias.copy_(conv.bias)
@@ -78,8 +88,10 @@ class VGGFeatures(nn.Module):
         h, w = input.shape[2:4]
         min_size = self._get_min_size(layers)
         if min(h, w) < min_size:
-            raise ValueError(f'Input is {h}x{w} but must be at least {min_size}x{min_size}')
-        feats = {'input': input}
+            raise ValueError(
+                f"Input is {h}x{w} but must be at least {min_size}x{min_size}"
+            )
+        feats = {"input": input}
         input = self.normalize(input)
         for i in range(max(layers) + 1):
             input = self.model[i](input.to(self.devices[i]))
@@ -94,10 +106,10 @@ class ScaledMSELoss(nn.Module):
 
     def __init__(self, eps=1e-8):
         super().__init__()
-        self.register_buffer('eps', torch.tensor(eps))
+        self.register_buffer("eps", torch.tensor(eps))
 
     def extra_repr(self):
-        return f'eps={self.eps:g}'
+        return f"eps={self.eps:g}"
 
     def forward(self, input, target):
         diff = input - target
@@ -107,7 +119,7 @@ class ScaledMSELoss(nn.Module):
 class ContentLoss(nn.Module):
     def __init__(self, target, eps=1e-8):
         super().__init__()
-        self.register_buffer('target', target)
+        self.register_buffer("target", target)
         self.loss = ScaledMSELoss(eps=eps)
 
     def forward(self, input):
@@ -117,7 +129,7 @@ class ContentLoss(nn.Module):
 class StyleLoss(nn.Module):
     def __init__(self, target, eps=1e-8):
         super().__init__()
-        self.register_buffer('target', target)
+        self.register_buffer("target", target)
         self.loss = ScaledMSELoss(eps=eps)
 
     @staticmethod
@@ -134,10 +146,10 @@ class TVLoss(nn.Module):
     """L2 total variation loss, as in Mahendran et al."""
 
     def forward(self, input):
-        input = F.pad(input, (0, 1, 0, 1), 'replicate')
+        input = F.pad(input, (0, 1, 0, 1), "replicate")
         x_diff = input[..., :-1, 1:] - input[..., :-1, :-1]
         y_diff = input[..., 1:, :-1] - input[..., :-1, :-1]
-        return (x_diff**2 + y_diff**2).mean()
+        return (x_diff ** 2 + y_diff ** 2).mean()
 
 
 class SumLoss(nn.ModuleList):
@@ -149,7 +161,7 @@ class SumLoss(nn.ModuleList):
         losses = [loss(*args, **kwargs) for loss in self]
         if self.verbose:
             for i, loss in enumerate(losses):
-                print(f'({i}): {loss.item():g}')
+                print(f"({i}): {loss.item():g}")
         return sum(loss.to(losses[-1].device) for loss in losses)
 
 
@@ -157,10 +169,10 @@ class Scale(nn.Module):
     def __init__(self, module, scale):
         super().__init__()
         self.module = module
-        self.register_buffer('scale', torch.tensor(scale))
+        self.register_buffer("scale", torch.tensor(scale))
 
     def extra_repr(self):
-        return f'(scale): {self.scale.item():g}'
+        return f"(scale): {self.scale.item():g}"
 
     def forward(self, *args, **kwargs):
         return self.module(*args, **kwargs) * self.scale
@@ -173,7 +185,7 @@ class LayerApply(nn.Module):
         self.layer = layer
 
     def extra_repr(self):
-        return f'(layer): {self.layer!r}'
+        return f"(layer): {self.layer!r}"
 
     def forward(self, input):
         return self.module(input[self.layer])
@@ -184,9 +196,9 @@ class EMA(nn.Module):
 
     def __init__(self, input, decay):
         super().__init__()
-        self.register_buffer('value', torch.zeros_like(input))
-        self.register_buffer('decay', torch.tensor(decay))
-        self.register_buffer('accum', torch.tensor(1.))
+        self.register_buffer("value", torch.zeros_like(input))
+        self.register_buffer("decay", torch.tensor(decay))
+        self.register_buffer("accum", torch.tensor(1.0))
         self.update(input)
 
     def get(self):
@@ -217,26 +229,28 @@ def gen_scales(start, end):
     while scale >= start:
         scales.add(scale)
         i += 1
-        scale = round(end / pow(2, i/2))
+        scale = round(end / pow(2, i / 2))
     return sorted(scales)
 
 
 def interpolate(*args, **kwargs):
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore', UserWarning)
+        warnings.simplefilter("ignore", UserWarning)
         return F.interpolate(*args, **kwargs)
 
 
 def scale_adam(state, shape):
     """Prepares a state dict to warm-start the Adam optimizer at a new scale."""
     state = copy.deepcopy(state)
-    for group in state['state'].values():
-        exp_avg, exp_avg_sq = group['exp_avg'], group['exp_avg_sq']
-        group['exp_avg'] = interpolate(exp_avg, shape, mode='bicubic')
-        group['exp_avg_sq'] = interpolate(exp_avg_sq, shape, mode='bilinear').relu_()
-        if 'max_exp_avg_sq' in group:
-            max_exp_avg_sq = group['max_exp_avg_sq']
-            group['max_exp_avg_sq'] = interpolate(max_exp_avg_sq, shape, mode='bilinear').relu_()
+    for group in state["state"].values():
+        exp_avg, exp_avg_sq = group["exp_avg"], group["exp_avg_sq"]
+        group["exp_avg"] = interpolate(exp_avg, shape, mode="bicubic")
+        group["exp_avg_sq"] = interpolate(exp_avg_sq, shape, mode="bilinear").relu_()
+        if "max_exp_avg_sq" in group:
+            max_exp_avg_sq = group["max_exp_avg_sq"]
+            group["max_exp_avg_sq"] = interpolate(
+                max_exp_avg_sq, shape, mode="bilinear"
+            ).relu_()
     return state
 
 
@@ -252,7 +266,7 @@ class STIterate:
 
 
 class StyleTransfer:
-    def __init__(self, devices=['cpu'], pooling='max'):
+    def __init__(self, devices=["cpu"], pooling="max"):
         self.devices = [torch.device(device) for device in devices]
         self.image = None
         self.average = None
@@ -266,48 +280,57 @@ class StyleTransfer:
         weight_sum = sum(abs(w) for w in style_weights)
         self.style_weights = [w / weight_sum for w in style_weights]
 
-        self.model = VGGFeatures(self.style_layers + self.content_layers, pooling=pooling)
+        self.model = VGGFeatures(
+            self.style_layers + self.content_layers, pooling=pooling
+        )
 
         if len(self.devices) == 1:
             device_plan = {0: self.devices[0]}
         elif len(self.devices) == 2:
             device_plan = {0: self.devices[0], 5: self.devices[1]}
         else:
-            raise ValueError('Only 1 or 2 devices are supported.')
+            raise ValueError("Only 1 or 2 devices are supported.")
 
         self.model.distribute_layers(device_plan)
 
     def get_image_tensor(self):
         return self.average.get().detach()[0].clamp(0, 1)
 
-    def get_image(self, image_type='pil'):
+    def get_image(self, image_type="pil"):
         if self.average is not None:
             image = self.get_image_tensor()
-            if image_type.lower() == 'pil':
+            if image_type.lower() == "pil":
                 return TF.to_pil_image(image)
-            elif image_type.lower() == 'np_uint16':
+            elif image_type.lower() == "np_uint16":
                 arr = image.cpu().movedim(0, 2).numpy()
                 return np.uint16(np.round(arr * 65535))
             else:
                 raise ValueError("image_type must be 'pil' or 'np_uint16'")
 
-    def stylize(self, content_image, style_images, *,
-                style_weights=None,
-                content_weight: float = 0.015,
-                tv_weight: float = 2.,
-                min_scale: int = 128,
-                end_scale: int = 512, # 512,
-                iterations: int = 1, # 500
-                initial_iterations: int = 2, # 1000
-                step_size: float = 0.02,
-                avg_decay: float = 0.99,
-                init: str = 'content',
-                style_scale_fac: float = 1.,
-                style_size: int = None,
-                callback=None):
+    def stylize(
+        self,
+        content_image,
+        style_images,
+        *,
+        style_weights=None,
+        content_weight: float = 0.015,
+        tv_weight: float = 2.0,
+        min_scale: int = 128,
+        end_scale: int = 512,  # 512,
+        iterations: int = 1,  # 500
+        initial_iterations: int = 2,  # 1000
+        step_size: float = 0.02,
+        avg_decay: float = 0.99,
+        init: str = "content",
+        style_scale_fac: float = 1.0,
+        style_size: int = None,
+        callback=None,
+    ):
 
         min_scale = min(min_scale, end_scale)
-        content_weights = [content_weight / len(self.content_layers)] * len(self.content_layers)
+        content_weights = [content_weight / len(self.content_layers)] * len(
+            self.content_layers
+        )
 
         if style_weights is None:
             style_weights = [1 / len(style_images)] * len(style_images)
@@ -315,26 +338,32 @@ class StyleTransfer:
             weight_sum = sum(abs(w) for w in style_weights)
             style_weights = [weight / weight_sum for weight in style_weights]
         if len(style_images) != len(style_weights):
-            raise ValueError('style_images and style_weights must have the same length')
+            raise ValueError("style_images and style_weights must have the same length")
 
-        tv_loss = Scale(LayerApply(TVLoss(), 'input'), tv_weight)
+        tv_loss = Scale(LayerApply(TVLoss(), "input"), tv_weight)
 
         scales = gen_scales(min_scale, end_scale)
 
         cw, ch = size_to_fit(content_image.size, scales[0], scale_up=True)
-        if init == 'content':
-            self.image = TF.to_tensor(content_image.resize((cw, ch), Image.LANCZOS))[None]
-        elif init == 'gray':
+        if init == "content":
+            self.image = TF.to_tensor(content_image.resize((cw, ch), Image.LANCZOS))[
+                None
+            ]
+        elif init == "gray":
             self.image = torch.rand([1, 3, ch, cw]) / 255 + 0.5
-        elif init == 'uniform':
+        elif init == "uniform":
             self.image = torch.rand([1, 3, ch, cw])
-        elif init == 'style_mean':
+        elif init == "style_mean":
             means = []
             for i, image in enumerate(style_images):
                 means.append(TF.to_tensor(image).mean(dim=(1, 2)) * style_weights[i])
-            self.image = torch.rand([1, 3, ch, cw]) / 255 + sum(means)[None, :, None, None]
+            self.image = (
+                torch.rand([1, 3, ch, cw]) / 255 + sum(means)[None, :, None, None]
+            )
         else:
-            raise ValueError("init must be one of 'content', 'gray', 'uniform', 'style_mean'")
+            raise ValueError(
+                "init must be one of 'content', 'gray', 'uniform', 'style_mean'"
+            )
         self.image = self.image.to(self.devices[0])
 
         opt = None
@@ -342,23 +371,27 @@ class StyleTransfer:
         # Stylize the image at successively finer scales, each greater by a factor of sqrt(2).
         # This differs from the scheme given in Gatys et al. (2016).
         for scale in scales:
-            if self.devices[0].type == 'cuda':
+            if self.devices[0].type == "cuda":
                 torch.cuda.empty_cache()
 
             cw, ch = size_to_fit(content_image.size, scale, scale_up=True)
             content = TF.to_tensor(content_image.resize((cw, ch), Image.LANCZOS))[None]
             content = content.to(self.devices[0])
 
-            self.image = interpolate(self.image.detach(), (ch, cw), mode='bicubic').clamp(0, 1)
+            self.image = interpolate(
+                self.image.detach(), (ch, cw), mode="bicubic"
+            ).clamp(0, 1)
             self.average = EMA(self.image, avg_decay)
             self.image.requires_grad_()
 
-            print(f'Processing content image ({cw}x{ch})...')
+            print(f"Processing content image ({cw}x{ch})...")
             content_feats = self.model(content, layers=self.content_layers)
             content_losses = []
             for layer, weight in zip(self.content_layers, content_weights):
                 target = content_feats[layer]
-                content_losses.append(Scale(LayerApply(ContentLoss(target), layer), weight))
+                content_losses.append(
+                    Scale(LayerApply(ContentLoss(target), layer), weight)
+                )
 
             style_targets, style_losses = {}, []
             for i, image in enumerate(style_images):
@@ -368,7 +401,7 @@ class StyleTransfer:
                     sw, sh = size_to_fit(image.size, style_size)
                 style = TF.to_tensor(image.resize((sw, sh), Image.LANCZOS))[None]
                 style = style.to(self.devices[0])
-                print(f'Processing style image ({sw}x{sh})...')
+                print(f"Processing style image ({sw}x{sh})...")
                 style_feats = self.model(style, layers=self.style_layers)
                 # Take the weighted average of multiple style targets (Gram matrices).
                 for layer in self.style_layers:
@@ -390,7 +423,7 @@ class StyleTransfer:
                 opt2.load_state_dict(opt_state)
             opt = opt2
 
-            if self.devices[0].type == 'cuda':
+            if self.devices[0].type == "cuda":
                 torch.cuda.empty_cache()
 
             actual_its = initial_iterations if scale == scales[0] else iterations
@@ -407,10 +440,21 @@ class StyleTransfer:
                 if callback is not None:
                     gpu_ram = 0
                     for device in self.devices:
-                        if device.type == 'cuda':
-                            gpu_ram = max(gpu_ram, torch.cuda.max_memory_allocated(device))
-                    callback(STIterate(w=cw, h=ch, i=i, i_max=actual_its, loss=loss.item(),
-                                       time=time.time(), gpu_ram=gpu_ram))
+                        if device.type == "cuda":
+                            gpu_ram = max(
+                                gpu_ram, torch.cuda.max_memory_allocated(device)
+                            )
+                    callback(
+                        STIterate(
+                            w=cw,
+                            h=ch,
+                            i=i,
+                            i_max=actual_its,
+                            loss=loss.item(),
+                            time=time.time(),
+                            gpu_ram=gpu_ram,
+                        )
+                    )
 
             # Initialize each new scale with the previous scale's averaged iterate.
             with torch.no_grad():
