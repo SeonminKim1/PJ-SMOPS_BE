@@ -4,12 +4,26 @@ from rest_framework.views import APIView
 
 from .serializers import MyGallerySerializer
 from .models import Product as ProductModel
+from .models import User as UserModel
 
 from rest_framework import status
 
 
+# art/product/
+class ProductAPIView(APIView):
+    # 상품 등록
+    def post(self, request):
+        # request.data["created_user"] = request.user
+        # request.data["owner_user"] = request.user
+        # request.data["created_user"] = UserModel.objects.get(id=1).id
+        print(request.data)
+        product_serializer = MyGallerySerializer(data=request.data)
+        product_serializer.is_valid(raise_exception=True)
+        product_serializer.save()
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
 
-# mygallery/
+
+# art/mygallery/
 class MyGalleryAPIView(APIView):
     # 현재 접속한 유저가 가지고 있는 그림들
     def get(self, request):
@@ -18,9 +32,9 @@ class MyGalleryAPIView(APIView):
         # size = request.query_params.get('size', '')
         products = ProductModel.objects.filter(owner_user_id="1")        
         return Response(MyGallerySerializer(products, many=True).data, status=status.HTTP_200_OK)
-    
-    
-# mygallery/<product_id>
+        
+        
+# art/mygallery/<product_id>
 class MyGalleryInfoAPIView(APIView):
     # 게시물 상세보기(그림, 생성정보, 구매정보)
     def get(self, request, product_id):
