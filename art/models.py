@@ -33,7 +33,7 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         related_name="product_owner_user",
     )
-    img_path = models.FileField("작품경로", upload_to="media/img")
+    img_path = models.FileField("작품경로", upload_to="")
 
     img_shape = models.ForeignKey(
         ImageShape, verbose_name="작품형태", on_delete=models.CASCADE
@@ -42,8 +42,8 @@ class Product(models.Model):
         Category, verbose_name="카테고리", on_delete=models.CASCADE
     )
     title = models.CharField("작품명", max_length=50)
-    discription = models.TextField("작품 설명", max_length=1000)
-    price = models.IntegerField("가격")
+    description = models.TextField("작품 설명", max_length=1000)
+    price = models.IntegerField ("가격")
     is_selling = models.BooleanField("판매중여부", default=False)
     created_date = models.DateTimeField("생성날짜", auto_now_add=True)
 
@@ -63,3 +63,4 @@ class Log(models.Model):
 
     class Meta:
         db_table = "LOG"
+

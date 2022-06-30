@@ -15,12 +15,9 @@ Including another URLconf
 """
 from art.views import TestProductView
 from django.contrib import admin
-from django.urls import path
-from user.views import TestUserView
+from django.urls import path, include
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    ## Test 용 URL 입니다.
-    path("get_users/", TestUserView.as_view()),
-    path("get_products/", TestProductView.as_view()),
+    path('admin/', admin.site.urls),
+    path('art/', include("art.urls"))
 ]
