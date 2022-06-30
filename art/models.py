@@ -34,7 +34,7 @@ class Product(models.Model):
         on_delete=models.CASCADE,
         related_name="product_owner_user",
     )
-    img_path = models.FileField("작품경로", upload_to="media/img")
+    img_path = models.FileField("작품경로", upload_to="")
 
     img_shape = models.ForeignKey(
         ImageShape, verbose_name="작품형태", on_delete=models.CASCADE
