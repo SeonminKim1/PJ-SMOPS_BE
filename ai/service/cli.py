@@ -151,7 +151,7 @@ class Callback:
         return {"args": self.args.__dict__, "iterates": self.iterates}
 
 
-def main(content, styles):
+def main(content, style):
     setup_exceptions()
     fix_start_method()
     p = argparse.ArgumentParser(
@@ -266,11 +266,11 @@ def main(content, styles):
         default=None,
         help="the ICC color profile (CMYK) for soft proofing the content and styles",
     )
-
-    args = p.parse_args()
+    
+    args = p.parse_args(args=[])
 
     content_img = load_image(content, args.proof)
-    style_imgs = [load_image(img, args.proof) for img in styles]
+    style_imgs = [load_image(img, args.proof) for img in style]
 
     image_type = "pil"
     if Path(args.output).suffix.lower() in {".tif", ".tiff"}:

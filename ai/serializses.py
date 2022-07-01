@@ -19,9 +19,10 @@ class AiProductSerializer(serializers.ModelSerializer):
         return data
     
     def create(self, validated_data):
+        # S3 업로드
         url = UploadProduct.upload_s3(validated_data)
         
-        # S3에 파일업로드 시 사용되는 URL을 DB에 저장
+        # URL을 DB에 저장
         validated_data["img_path"] = url
         product = ProductModel(**validated_data)
         product.save()
