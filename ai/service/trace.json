@@ -1,0 +1,50 @@
+{
+    "args": {
+        "content": "paintings1.png",
+        "styles": [
+            "paintings2.png"
+        ],
+        "output": "out.png",
+        "style_weights": null,
+        "devices": [],
+        "random_seed": 0,
+        "content_weight": 0.015,
+        "tv_weight": 2.0,
+        "min_scale": 128,
+        "end_scale": 256,
+        "iterations": 500,
+        "initial_iterations": 1000,
+        "save_every": 50,
+        "step_size": 0.02,
+        "avg_decay": 0.99,
+        "init": "content",
+        "style_scale_fac": 1.0,
+        "style_size": null,
+        "pooling": "max",
+        "proof": null,
+        "web": false,
+        "host": "0.0.0.0",
+        "port": 8080,
+        "browser": ""
+    },
+    "iterates": [
+        {
+            "w": 127,
+            "h": 128,
+            "i": 1,
+            "i_max": 1000,
+            "loss": 1.3685085773468018,
+            "time": 1656587610.3255806,
+            "gpu_ram": 0
+        },
+        {
+            "w": 127,
+            "h": 128,
+            "i": 2,
+            "i_max": 1000,
+            "loss": 1.2874386310577393,
+            "time": 1656587611.391964,
+            "gpu_ram": 0
+        }
+    ]
+}
