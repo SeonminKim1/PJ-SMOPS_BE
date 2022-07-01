@@ -1,6 +1,7 @@
 # Essential Package
 django
 djangorestframework
+django-cors-headers
 mysqlclient
 
 # Improve code quality Tool

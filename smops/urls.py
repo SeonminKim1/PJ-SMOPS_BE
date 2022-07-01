@@ -17,7 +17,12 @@ from art.views import TestProductView
 from django.contrib import admin
 from django.urls import path, include
 
+from art.views import ProductsByCategoryView, ProductsByFilteringView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('art/', include("art.urls"))
+    path('art/', include("art.urls")),
+
+    path("product/<str:category_name>/", ProductsByCategoryView.as_view()),
+    path("product/", ProductsByFilteringView.as_view()),
 ]
