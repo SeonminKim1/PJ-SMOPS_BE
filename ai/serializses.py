@@ -4,18 +4,17 @@ import boto3
 from art.models import Product as ProductModel
 from art.models import Log as LogModel
 
-from ai.views import UploadProduct
-
+from .upload import UploadProduct
 
 class AiLogSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = LogModel
         fields = "__all__"
-
+        
 
 class AiProductSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(read_only=True, slug_field="fullname")
-
+    
     def validate(self, data):
         return data
     
@@ -35,3 +34,6 @@ class AiProductSerializer(serializers.ModelSerializer):
         model = ProductModel
         fields = ["id", "created_user", "owner_user", "img_path", "img_shape", "category", "title", "description",
                   "price", "is_selling", "created_date", "log"]
+
+
+
