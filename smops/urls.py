@@ -21,6 +21,8 @@ from art.views import ProductsByCategoryView, ProductsByFilteringView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('art/', include("art.urls")),
+    path('mygallery/', include("mygallery.urls")),
+    path('user/', include("user.urls")),
 
     path("product/<str:category_name>/", ProductsByCategoryView.as_view()),
     path("product/", ProductsByFilteringView.as_view()),

@@ -7,7 +7,7 @@ from .models import User
 
 
 # Test 용 CBV 입니다. endpoint : get_users/
-class TestUserView(APIView):
+class UserAPIView(APIView):
     def get(self, request):
         users = User.objects.all()
         print(users)
