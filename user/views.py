@@ -1,8 +1,9 @@
 # Create your views here.
-from rest_framework import viewsets, permissions, status, generics, mixins
+from rest_framework import generics, mixins, permissions, status, viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import get_object_or_404
+
 from .models import User
 
 
