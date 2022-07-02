@@ -4,10 +4,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 
-from .serializers import ProductsMainSerializer
+from .serializers import ProductsMainSerializer, ProductsDeatilSerializer
 
-from .models import Product as ProductModel
-from .models import User as UserModel
 from .models import Product, Category, Log, ImageShape
 from user.models import User
 
@@ -30,6 +28,7 @@ class ProductsByCategoryView(APIView):
         # print('==products queryset data ', products)
 
         products_serializers = ProductsMainSerializer(products, many=True).data
+        print('====', products_serializers)
         # products = Product.objects.all()
         return Response(products_serializers, status.HTTP_200_OK)
 
@@ -41,9 +40,8 @@ class ProductsByFilteringView(APIView):
         category_name = request.query_params.get('category_name', '인물화')
         price = request.query_params.get('price', "0~10000000만원")
         image_shape = request.query_params.get('image_shape', '정방형')
-        searching_text = request.query_params.get('searching_text', '')
         ordering = request.query_params.get('ordering', 'latest_date') # latest_date, price_up, price_down
-        print('==requset data', category_name, '///', price, '///', image_shape, '///', searching_text, '///', ordering)
+        print('==requset data', category_name, '///', price, '///', image_shape, '///', ordering)
 
         # 2-1. Get Price Range
         min_price, max_price = price.replace('만원', '').split('~')
@@ -60,17 +58,12 @@ class ProductsByFilteringView(APIView):
             img_shape = ImageShape.objects.get(shape = image_shape) 
         except ImageShape.DoesNotExist:
             return Response({"message": "invalid ImageShape"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # 2-4. get Artist searching list - ex) '김'을 가진 user id list - 1
-        searching_user_id_list = [user.id for user in User.objects.filter(fullname__contains = searching_text)] # queryset list (name)
-        print('===searching_user_id_list', searching_user_id_list)
 
         # 3. get Product - 0
         products = Product.objects.filter(
                 Q(category_id = category) & Q(is_selling=True) &
                 Q(price__gte=min_price) & Q(price__lt=max_price) &
-                Q(img_shape_id = img_shape) &
-                Q(created_user_id__in = searching_user_id_list)
+                Q(img_shape_id = img_shape)
         )
 
         # 4. Product ordering - 0
@@ -87,3 +80,50 @@ class ProductsByFilteringView(APIView):
         products_serializers = ProductsMainSerializer(products, many=True).data
         return Response(products_serializers, status.HTTP_200_OK)
 
+# product/<category_name><searching_text>
+class ProductsByArtistSearchingingView(APIView):
+    @query_debugger
+    def get(self, request, category_name, searching_text):
+        # 1. get Request(GET) Params
+        #category_name = request.query_params.get('category_name', '인물화')
+        #searching_text = request.query_params.get('searching_text', '')
+        print('==requset data', category_name, '///', searching_text)
+
+        # 2-1. Check Category Model - 3
+        try:
+            category = Category.objects.get(name = category_name)
+        except Category.DoesNotExist:
+            return Response({"message": "invalid Category type"}, status=status.HTTP_400_BAD_REQUEST)
+                
+        # 2-2. get Artist searching list - ex) '김'을 가진 user id list - 1
+        searching_user_id_list = [user.id for user in User.objects.filter(fullname__contains = searching_text)] # queryset list (name)
+        print('===searching_user_id_list', searching_user_id_list)
+
+        # 3. get Product - 0
+        products = Product.objects.filter(
+                Q(category_id = category) & Q(is_selling=True) &
+                Q(created_user_id__in = searching_user_id_list)
+        )
+
+        # 4. Product Serializing - 9
+        products_serializers = ProductsMainSerializer(products, many=True).data
+        return Response(products_serializers, status.HTTP_200_OK)
+
+# product/detail/<int:product_id>
+class ProductsByArtistSearchingingView(APIView):
+    @query_debugger
+    def get(self, request, product_id):
+        # 1. get Request(GET) Params
+        #category_name = request.query_params.get('category_name', '인물화')
+        #searching_text = request.query_params.get('searching_text', '')
+        print('==requset data', product_id)
+
+        # 2. get Product Object
+        try:
+            product = Product.objects.get(id = product_id)
+        except Product.DoesNotExist:
+            return Response({"message": "invalid Product type"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 4. Product Serializing - 9
+        product_serializers = ProductsDeatilSerializer(product).data
+        return Response(product_serializers, status.HTTP_200_OK)
