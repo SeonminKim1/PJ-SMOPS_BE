@@ -4,5 +4,4 @@ from mygallery import views
 # art/
 urlpatterns = [
     path('', views.ProductAPIView.as_view()),
-        
 ]

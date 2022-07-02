@@ -23,6 +23,7 @@ urlpatterns = [
     path('art/', include("art.urls")),
     path('mygallery/', include("mygallery.urls")),
     path('user/', include("user.urls")),
+    path('ai/', include("ai.urls")),
 
     # 상품 Category 별 조회
     path("product/<str:category_name>/", ProductsByCategoryView.as_view()),    
