@@ -9,6 +9,7 @@ from art.models import Product as ProductModel
 
 from .upload import UploadProduct
 
+# ai/
 class AiProductView(APIView):
     def get(self, request):
         product = ProductModel.objects.get(id=17)
@@ -16,8 +17,6 @@ class AiProductView(APIView):
 
     # 상품 등록
     def post(self, request):
-        request.data["created_user"] = request.user.id
-        request.data["owner_user"] = request.user.id        
         product_serializer = AiProductSerializer(data=request.data)
         product_serializer.is_valid(raise_exception=True)
         product_serializer.save()
@@ -32,6 +31,7 @@ class AiProductView(APIView):
         
         return Response(product_serializer.data, status=status.HTTP_200_OK)
 
+# ai/inference/
 class AiCreateProductView(APIView):
     def post(self, request):
         content = request.data["content"]
@@ -44,4 +44,5 @@ class AiCreateProductView(APIView):
 
         response = HttpResponse(content_type='image/png')
         output_image.save(response, "PNG")
+        print(response)
         return response

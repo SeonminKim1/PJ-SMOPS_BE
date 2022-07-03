@@ -8,8 +8,12 @@ from .models import User as UserModel
 
 from rest_framework import permissions
 
+from rest_framework_simplejwt.authentication import JWTAuthentication
 # user/
 class UserAPIView(APIView):
+    # JWT 인증방식 클래스 지정하기
+    authentication_classes = [JWTAuthentication]
+    
     # 로그인 한 유저 정보 출력
     def get(self, request):
         print(request.user)
@@ -28,7 +32,7 @@ class UserAPIView(APIView):
        
 
 
-from rest_framework_simplejwt.authentication import JWTAuthentication
+
 
 # 인가된 사용자만 접근할 수 있는 View 생성
 class OnlyAuthenticatedUserView(APIView):
