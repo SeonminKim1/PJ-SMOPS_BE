@@ -10,28 +10,14 @@ from art.models import Product as ProductModel
 # Query Debugger용
 from _utils.query_utils import query_debugger
 
-# art/
-class ProductAPIView(APIView):
-    # 상품 등록
-    def post(self, request):
-        # request.data["created_user"] = request.user
-        # request.data["owner_user"] = request.user
-        # request.data["created_user"] = UserModel.objects.get(id=1).id
-        print(request.data)
-        product_serializer = MyGallerySerializer(data=request.data)
-        product_serializer.is_valid(raise_exception=True)
-        product_serializer.save()
-        return Response(product_serializer.data, status=status.HTTP_200_OK)
-
-
 # mygallery/
 class MyGalleryAPIView(APIView):
     # 현재 접속한 유저가 가지고 있는 그림들
     def get(self, request):
-        # # 필터적용 하여 시리얼라이저에 전달
-        # price = request.query_params.get('price', '')
-        # size = request.query_params.get('size', '')
-        products = ProductModel.objects.filter(owner_user_id="1")        
+        # 필터적용 하여 시리얼라이저에 전달
+        
+        # 현재 접속중인 유저가 가진 작품들만 출력
+        products = ProductModel.objects.filter(owner_user_id=request.user.id)        
         return Response(MyGallerySerializer(products, many=True).data, status=status.HTTP_200_OK)
         
         
