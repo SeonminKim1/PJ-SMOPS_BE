@@ -20,7 +20,6 @@ from art.views import ProductsByCategoryView, ProductsByFilteringView, ProductsB
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('art/', include("art.urls")),
     path('mygallery/', include("mygallery.urls")),
     path('user/', include("user.urls")),
     path('ai/', include("ai.urls")),
