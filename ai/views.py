@@ -1,25 +1,47 @@
-import io
+from PIL import Image
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
 
-import boto3
-from service.cli import main
+from .serializses import AiProductSerializer
+from .serializses import AiLogSerializer
+from art.models import Product as ProductModel
 
-base_img_path = "../media/img/base.jpg"
-style_img_path = ["../media/img/style.jpg"]
-output_image = main(base_img_path, style_img_path)
-print("===output_image", type(output_image))
+from .upload import UploadProduct
 
-in_mem_file = io.BytesIO()
-print(in_mem_file, type(in_mem_file))
-output_image.save(in_mem_file, "PNG")
-in_mem_file.seek(0)
+class AiProductView(APIView):
+    def get(self, request):
+        product = ProductModel.objects.get(id=17)
+        return Response(AiProductSerializer(product).data)
 
-s3 = boto3.client("s3")
-s3.put_object(
-    ACL="public-read",
-    Bucket="luckyseven-todaylunch",  # "{버킷이름}",
-    Body=in_mem_file,  # 업로드할 파일 객체
-    Key="output.png",  # S3에 업로드할 파일의 경로
-    ContentType="image/png",  # 메타데이터 설정
-)
-print("끝===")
-# Save the image to an in-memory file
+    # 상품 등록
+    def post(self, request):
+        request.data["created_user"] = request.user.id
+        request.data["owner_user"] = request.user.id        
+        product_serializer = AiProductSerializer(data=request.data)
+        product_serializer.is_valid(raise_exception=True)
+        product_serializer.save()
+
+        # 최초 로그 기록
+        request.data["product"] = product_serializer.data["id"]
+        request.data["old_owner"] = product_serializer.data["created_user"]
+        request.data["old_price"] = product_serializer.data["price"]
+        log_serializer = AiLogSerializer(data=request.data)
+        log_serializer.is_valid(raise_exception=True)
+        log_serializer.save()
+        
+        return Response(product_serializer.data, status=status.HTTP_200_OK)
+
+class AiCreateProductView(APIView):
+    def post(self, request):
+        content = request.data["content"]
+        style = [request.data["style"]]
+        print(type(content))
+        print(type(style))
+
+        output_image = UploadProduct.create_product(content, style)
+        from django.http import HttpResponse
+
+        response = HttpResponse(content_type='image/png')
+        output_image.save(response, "PNG")
+        return response

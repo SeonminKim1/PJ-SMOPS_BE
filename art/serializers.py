@@ -28,6 +28,8 @@ class ProductsMainSerializer(serializers.ModelSerializer):
         fields = ["id", "category", "created_user", "img_path", "title", "description",
                   "price", "is_selling", "created_date"]
 
+##################################################################
+### Main Detail Page
 class LogsSerializer(serializers.ModelSerializer):
     product = serializers.SerializerMethodField()
     def get_product(self, obj):
@@ -41,3 +43,18 @@ class LogsSerializer(serializers.ModelSerializer):
         model = Log
         fields = ['product', 'old_owner', 'updated_date', 'old_price']
 
+class ProductsDeatilSerializer(serializers.ModelSerializer):
+    created_user = serializers.SerializerMethodField()
+    def get_created_user(self, obj):
+        return obj.created_user.fullname
+        
+    category = serializers.SerializerMethodField()
+    def get_category(self,obj):
+        return obj.category.name
+    log = LogsSerializer(many=True, source="log_set")
+    class Meta:
+        model = Product
+        fields = ["created_user", "owner_user",
+                  "img_path", "img_shape",
+                  "category", "title", "description",
+                  "price", "is_selling", "created_date","log"]
