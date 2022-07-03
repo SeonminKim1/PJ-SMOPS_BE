@@ -14,7 +14,6 @@ class UserAPIView(APIView):
     def get(self, request):
         print(request.user)
         user = UserModel.objects.get(id=request.user.id)        
-        
         return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
     
     # 회원가입
@@ -26,6 +25,7 @@ class UserAPIView(APIView):
             serializer.save()
             return Response({"user" : serializer.data, "msg" : "회원가입 완료"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+       
 
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
