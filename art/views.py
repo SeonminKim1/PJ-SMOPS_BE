@@ -37,14 +37,22 @@ class ProductsByFilteringView(APIView):
     @query_debugger
     def get(self, request):
         # 1. get Request(GET) Params
-        category_name = request.query_params.get('category_name', '인물화')
-        price = request.query_params.get('price', "0~10000000만원")
-        image_shape = request.query_params.get('image_shape', '정방형')
-        ordering = request.query_params.get('ordering', 'latest_date') # latest_date, price_up, price_down
+        category_name = request.query_params.get('category_name')
+        category_name = '인물화' if category_name == '' else category_name
+
+        price = request.query_params.get('price')
+        price = '0~10,000,000원' if price == '' else price
+
+        image_shape = request.query_params.get('image_shape') 
+        image_shape = '정방형' if image_shape == '' else image_shape
+
+        ordering = request.query_params.get('ordering_value') # latest_date, price_up, price_down
+        ordering = 'latest_date' if ordering == '' else ordering
+
         print('==requset data', category_name, '///', price, '///', image_shape, '///', ordering)
 
         # 2-1. Get Price Range
-        min_price, max_price = price.replace('만원', '').split('~')
+        min_price, max_price = price.replace('원', '').replace(',', '').split('~')
         # print('=== min_max_price', min_price, max_price)
 
         # 2-2. Check Category Model - 3
@@ -67,14 +75,15 @@ class ProductsByFilteringView(APIView):
         )
 
         # 4. Product ordering - 0
-        if ordering == '':
-            pass
-        elif ordering == 'price_down': # 가격 내림 차 순
+        if ordering == 'descending_price': # 가격 내림 차 순
+            print('가격 내림차순')
             products = products.order_by('-price')
-        elif ordering == 'price_up': # 가격 오름 차 순
+        elif ordering == 'ascending_price': # 가격 오름 차 순
             products = products.order_by('price')
+            print('가격 오름 차순')
         elif ordering == 'latest_date': # 최신 날짜순
             products = products.order_by('-created_date')
+            print('가격 최신 날짜순')
 
         # 5. Product Serializing - 9
         products_serializers = ProductsMainSerializer(products, many=True).data
@@ -110,7 +119,7 @@ class ProductsByArtistSearchingingView(APIView):
         return Response(products_serializers, status.HTTP_200_OK)
 
 # product/detail/<int:product_id>
-class ProductsByArtistSearchingingView(APIView):
+class ProductDetailsView(APIView):
     @query_debugger
     def get(self, request, product_id):
         # 1. get Request(GET) Params
@@ -127,3 +136,28 @@ class ProductsByArtistSearchingingView(APIView):
         # 4. Product Serializing - 9
         product_serializers = ProductsDeatilSerializer(product).data
         return Response(product_serializers, status.HTTP_200_OK)
+
+# product/detail/buy/
+class ProductDetailsBuyView(APIView):
+    def get(self, request):
+        print('hihi')
+        return Response({}, status.HTTP_200_OK)
+
+
+    @query_debugger
+    def post(self, request):
+        # 1. get Request(POST) Params
+        product_id = request.data['product_id']
+        price = request.data['price']
+        updated_date = request.data['updated_date']
+        user = request.user
+
+        # 2. 구매했으면 상품 소유자 변경
+        product = Product.objects.get(id = product_id)
+        product.owner_user = user
+        product.is_seliing = False
+        product.save()
+
+        # 3. 로그 추가
+        Log.objects.create(product=product, old_owner=user, updated_date= updated_date, old_price=price)
+        return Response({'message':'Success'}, status.HTTP_200_OK)

@@ -51,6 +51,15 @@ class ProductsDeatilSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     def get_category(self,obj):
         return obj.category.name
+
+    owner_user = serializers.SerializerMethodField()
+    def get_owner_user(self, obj):
+        return obj.owner_user.fullname   
+
+    img_shape = serializers.SerializerMethodField()
+    def get_img_shape(self, obj):
+        return obj.img_shape.shape   
+
     log = LogsSerializer(many=True, source="log_set")
     class Meta:
         model = Product
