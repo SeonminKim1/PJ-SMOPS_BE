@@ -136,3 +136,28 @@ class ProductDetailsView(APIView):
         # 4. Product Serializing - 9
         product_serializers = ProductsDeatilSerializer(product).data
         return Response(product_serializers, status.HTTP_200_OK)
+
+# product/detail/buy/
+class ProductDetailsBuyView(APIView):
+    def get(self, request):
+        print('hihi')
+        return Response({}, status.HTTP_200_OK)
+
+
+    @query_debugger
+    def post(self, request):
+        # 1. get Request(POST) Params
+        product_id = request.data['product_id']
+        price = request.data['price']
+        updated_date = request.data['updated_date']
+        user = request.user
+
+        # 2. 구매했으면 상품 소유자 변경
+        product = Product.objects.get(id = product_id)
+        product.owner_user = user
+        product.is_seliing = False
+        product.save()
+
+        # 3. 로그 추가
+        Log.objects.create(product=product, old_owner=user, updated_date= updated_date, old_price=price)
+        return Response({'message':'Success'}, status.HTTP_200_OK)

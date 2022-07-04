@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from art.views import ProductsByCategoryView, ProductsByFilteringView, ProductsByArtistSearchingingView, ProductDetailsView
+from art.views import ProductsByCategoryView, ProductsByFilteringView, ProductsByArtistSearchingingView, ProductDetailsView, ProductDetailsBuyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,5 +32,7 @@ urlpatterns = [
     path("product/<str:category_name>/<str:searching_text>/", ProductsByArtistSearchingingView.as_view()),
 
     # 상품 상세 페이지
-    path("product/detail/<int:product_id>", ProductDetailsView.as_view())
+    path("product/detail/<int:product_id>", ProductDetailsView.as_view()),
+    path("product/detail/buy/log/", ProductDetailsBuyView.as_view())
+
 ]
