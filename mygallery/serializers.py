@@ -6,12 +6,10 @@ from art.models import Log as LogModel
 
 class LogSerializer(serializers.ModelSerializer):
     product = serializers.SerializerMethodField()
-
     def get_product(self, obj):
         return obj.product.title
 
     old_owner = serializers.SerializerMethodField()
-
     def get_old_owner(self, obj):
         return obj.old_owner.fullname
 
@@ -21,10 +19,17 @@ class LogSerializer(serializers.ModelSerializer):
 
 
 class MyGallerySerializer(serializers.ModelSerializer):
-
     created_user = serializers.SerializerMethodField()
     def get_created_user(self, obj):
         return obj.created_user.fullname
+    
+    category = serializers.SerializerMethodField()
+    def get_category(self, obj):
+        return obj.category.name
+    
+    img_shape = serializers.SerializerMethodField()
+    def get_img_shape(self, obj):
+        return obj.img_shape.shape
 
     def create(self, validated_data):
         img_path = validated_data["img_path"]
@@ -47,4 +52,4 @@ class MyGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModel
         fields = ["id", "category", "created_user", "img_path", "title", "description",
-                  "price", "is_selling", "created_date", "log"]
+                  "price", "is_selling", "created_date","img_shape", "log"]
