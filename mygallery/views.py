@@ -11,8 +11,6 @@ from art.models import Product as ProductModel
 from _utils.query_utils import query_debugger
 
 # mygallery/
-
-
 class MyGalleryAPIView(APIView):
     # 현재 접속한 유저가 가지고 있는 그림들
     def get(self, request):
