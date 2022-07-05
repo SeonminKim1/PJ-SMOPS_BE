@@ -111,10 +111,10 @@ def setup_exceptions():
     except ImportError:
         pass
 
-
+# 'force=True' for mac 
 def fix_start_method():
     if platform.system() == "Darwin":
-        mp.set_start_method("spawn")
+        mp.set_start_method("spawn", force=True) 
 
 
 def print_error(err):
