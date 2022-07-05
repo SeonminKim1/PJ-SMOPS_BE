@@ -4,6 +4,12 @@ djangorestframework
 django-cors-headers
 djangorestframework-simplejwt
 mysqlclient
+Pillow
+boto3
+numpy
+dataclasses
+tifffile
+tqdm
 
 # Improve code quality Tool
 black
