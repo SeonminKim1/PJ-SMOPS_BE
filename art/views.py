@@ -54,12 +54,13 @@ class ProductsByFilteringView(APIView):
             category = Category.objects.get(name = category_name)
         except Category.DoesNotExist:
             return Response({"message": "invalid Category type"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         # 2-3. Check Imageshape Model -1
-        try:
-            img_shape = ImageShape.objects.get(shape = image_shape) 
-        except ImageShape.DoesNotExist:
-            return Response({"message": "invalid ImageShape"}, status=status.HTTP_400_BAD_REQUEST)
+        if image_shape !='':
+            try:
+                img_shape = ImageShape.objects.get(shape = image_shape) 
+            except ImageShape.DoesNotExist:
+                return Response({"message": "invalid ImageShape"}, status=status.HTTP_400_BAD_REQUEST)
 
         # 3. Make Queries by Filter condition - 0
         q = Q()
@@ -70,7 +71,7 @@ class ProductsByFilteringView(APIView):
             q.add(Q(price__gte=min_price), q.AND)
             if max_price != 'infinite':
                 Q(price__lt=max_price)
-        if img_shape!='':
+        if image_shape !='':
             q.add(Q(img_shape_id = img_shape), q.AND)
 
         products = Product.objects.filter(q)
