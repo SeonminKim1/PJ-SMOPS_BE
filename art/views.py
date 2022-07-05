@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from django.db import transaction
 
 from .serializers import ProductsMainSerializer, ProductsDeatilSerializer
 
@@ -17,6 +18,7 @@ from _utils.query_utils import query_debugger
 # product/<category_name>/
 class ProductsByCategoryView(APIView):
     @query_debugger
+    @transaction.atomic()
     def get(self, request, category_name):
         # get - Category by Category_name
         try:
@@ -35,25 +37,17 @@ class ProductsByCategoryView(APIView):
 # product/<category_name><filters..>
 class ProductsByFilteringView(APIView):
     @query_debugger
+    @transaction.atomic()
     def get(self, request):
         # 1. get Request(GET) Params
         category_name = request.query_params.get('category_name')
         category_name = '인물화' if category_name == '' else category_name
 
         price = request.query_params.get('price')
-        price = '0~10,000,000원' if price == '' else price
-
         image_shape = request.query_params.get('image_shape') 
-        image_shape = '정방형' if image_shape == '' else image_shape
-
         ordering = request.query_params.get('ordering_value') # latest_date, price_up, price_down
-        ordering = 'latest_date' if ordering == '' else ordering
 
         print('==requset data', category_name, '///', price, '///', image_shape, '///', ordering)
-
-        # 2-1. Get Price Range
-        min_price, max_price = price.replace('원', '').replace(',', '').split('~')
-        # print('=== min_max_price', min_price, max_price)
 
         # 2-2. Check Category Model - 3
         try:
@@ -67,15 +61,23 @@ class ProductsByFilteringView(APIView):
         except ImageShape.DoesNotExist:
             return Response({"message": "invalid ImageShape"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 3. get Product - 0
-        products = Product.objects.filter(
-                Q(category_id = category) & Q(is_selling=True) &
-                Q(price__gte=min_price) & Q(price__lt=max_price) &
-                Q(img_shape_id = img_shape)
-        )
+        # 3. Make Queries by Filter condition - 0
+        q = Q()
+        q.add(Q(is_selling=True), q.AND)
+        q.add(Q(category_id = category), q.AND)
+        if price!='':
+            min_price, max_price = price.replace('원', '').replace(',', '').split('~')
+            q.add(Q(price__gte=min_price), q.AND)
+            if max_price != 'infinite':
+                Q(price__lt=max_price)
+        if img_shape!='':
+            q.add(Q(img_shape_id = img_shape), q.AND)
 
+        products = Product.objects.filter(q)
         # 4. Product ordering - 0
-        if ordering == 'descending_price': # 가격 내림 차 순
+        if ordering == '':
+            pass
+        elif ordering == 'descending_price': # 가격 내림 차 순
             print('가격 내림차순')
             products = products.order_by('-price')
         elif ordering == 'ascending_price': # 가격 오름 차 순
@@ -92,6 +94,7 @@ class ProductsByFilteringView(APIView):
 # product/<category_name><searching_text>
 class ProductsByArtistSearchingingView(APIView):
     @query_debugger
+    @transaction.atomic()
     def get(self, request, category_name, searching_text):
         # 1. get Request(GET) Params
         #category_name = request.query_params.get('category_name', '인물화')
@@ -121,6 +124,7 @@ class ProductsByArtistSearchingingView(APIView):
 # product/detail/<int:product_id>
 class ProductDetailsView(APIView):
     @query_debugger
+    @transaction.atomic()
     def get(self, request, product_id):
         # 1. get Request(GET) Params
         #category_name = request.query_params.get('category_name', '인물화')
@@ -137,14 +141,10 @@ class ProductDetailsView(APIView):
         product_serializers = ProductsDeatilSerializer(product).data
         return Response(product_serializers, status.HTTP_200_OK)
 
-# product/detail/buy/
+# product/detail/buy/log
 class ProductDetailsBuyView(APIView):
-    def get(self, request):
-        print('hihi')
-        return Response({}, status.HTTP_200_OK)
-
-
     @query_debugger
+    @transaction.atomic()
     def post(self, request):
         # 1. get Request(POST) Params
         product_id = request.data['product_id']
