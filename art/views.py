@@ -68,9 +68,10 @@ class ProductsByFilteringView(APIView):
         q.add(Q(category_id = category), q.AND)
         if price!='':
             min_price, max_price = price.replace('원', '').replace(',', '').split('~')
+            print('===', min_price, max_price)
             q.add(Q(price__gte=min_price), q.AND)
             if max_price != 'infinite':
-                Q(price__lt=max_price)
+                q.add(Q(price__lt=max_price), q.AND)
         if image_shape !='':
             q.add(Q(img_shape_id = img_shape), q.AND)
 
