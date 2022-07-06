@@ -17,6 +17,7 @@
 ## :handshake: Project-Rules
 #### Scheduling & API 
 - [Git Project Link](https://github.com/SeonminKim1/SMOPS-BE/projects/1) / [간트차트 Link](https://docs.google.com/spreadsheets/d/1_1Sx46dnKnI8_DLJQzAASMSr7u525RFjm2Iat0beU14/edit#gid=375979933) / [API Design Link](https://www.notion.so/12cc32feafcb4e81b2377f07b04a6824?v=5b05b526a18e434cb44d62f044b26bf7)
+- [Git BE Issue Link](https://github.com/SeonminKim1/SMOPS-BE/issues) / [Git FE Issue Link](https://github.com/SeonminKim1/SMOPS-FE/issues)
 
 #### Branch Info
 - main : LocalHost 실행 branch
