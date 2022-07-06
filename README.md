@@ -133,3 +133,16 @@ $ python auto_cleancode.py
 - AWS IAM 부여하여 Infra Team 공동 관리
 
 <hr>
+
+## 👉 시연 화면
+#### 회원가입, 로그인 화면
+![image](https://user-images.githubusercontent.com/33525798/177491113-4c7bfeba-a06b-4318-8284-645b2d04ffa4.png)
+
+#### 유화 메인 페이지, 유화 상세 페이지
+![image](https://user-images.githubusercontent.com/33525798/177491092-a2c4d2d8-fec9-46ad-bb43-9db7761b5c94.png)
+
+#### 마이 갤러리 페이지
+![image](https://user-images.githubusercontent.com/33525798/177491149-06c73637-facf-45cc-88e8-9c964f94f72e.png)
+
+#### 유화 만들기 페이지 (AI)
+![image](https://user-images.githubusercontent.com/33525798/177491166-fcc523d5-d761-4d6f-9bf1-55dc5188695a.png)
