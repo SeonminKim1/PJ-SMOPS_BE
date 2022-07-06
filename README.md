@@ -1,47 +1,32 @@
-![image](https://user-images.githubusercontent.com/87006912/173308040-4a80baf8-b228-47a6-a4e9-46b026fdc164.png)
-## 👉 오늘의 점심
-- 하루 삼시세끼, “오늘 점심 뭐 먹지?” 고민해 본 사람들이 고민하는 사람들을 위해 만들어 보는 웹 서비스
+![image](https://user-images.githubusercontent.com/33525798/177453882-a8d55a06-1556-4a63-b1f8-244fca57b0a4.png)
 
-## 👉 Introduction
-- **주제** : 점심 추천 웹 서비스 (for 직딩, 일반인)
-- **기간** : 2022.06.03 (금) ~ 2022.06.13 (월)
+## :owl: SMOPS (Selling My Oil Paintings Service)
+- 나만의 유화를 만들어 판매하거나 구매할 수 있는 웹 서비스
+
+## :panda_face: Introduction
+- **주제** : 유화 제작 및 판매 사이트 
+- **기간** : 2022.06.28 (화) ~ 2022.07.06 (수)
 - **Team** : 김선민 ([Github](https://github.com/SeonminKim1)), 김민기 ([Github](https://github.com/kmingky)), 박재현 ([Github](https://github.com/Aeius)), 황신혜 ([Github](https://github.com/hwangshinhye)) 
 
 <hr>
 
-## 👉 Project-Rules
-#### Schedule Management : [Git Project Link](https://github.com/SeonminKim1/TODAY_LUNCH/projects/1), [간트차트 Link](https://docs.google.com/spreadsheets/d/1_1Sx46dnKnI8_DLJQzAASMSr7u525RFjm2Iat0beU14/edit#gid=1212318893)
-#### API Design : [Notion-link](https://www.notion.so/1b59a28804b9451d97d7b0145dc658f3?v=fb5a1b50406d43699b83a1d38aa2986c)
+## 📚 Project Structure
+![image](https://user-images.githubusercontent.com/33525798/177453424-fbabf1d3-6109-4e68-a9cd-83c265fc4637.png)
+<hr>
+
+## :handshake: Project-Rules
+#### Scheduling & API 
+- [Git Project Link](https://github.com/SeonminKim1/SMOPS-BE/projects/1) / [간트차트 Link](https://docs.google.com/spreadsheets/d/1_1Sx46dnKnI8_DLJQzAASMSr7u525RFjm2Iat0beU14/edit#gid=375979933) / [API Design Link](https://www.notion.so/12cc32feafcb4e81b2377f07b04a6824?v=5b05b526a18e434cb44d62f044b26bf7)
+
 #### Branch Info
 - main : LocalHost 실행 branch
 - publish : EC2 Hosting 실행 Branch
 
 #### Figma Mock-up
-![image](https://user-images.githubusercontent.com/87006912/173303730-37dea9f0-4aad-4fa4-ac9d-248fc19766e1.png)
+![image](https://user-images.githubusercontent.com/33525798/177453735-59c483e0-a638-42fd-bccb-47b1795641a3.png)
 
 #### DB Modeling   
-![image](https://user-images.githubusercontent.com/33525798/173334447-cbf70e34-82a3-47af-844a-0c6e4804c394.png)
-
-<hr>
-
-## 👉 Development-Stack
-#### 📚 Frameworks, Libraries (ML) 
-![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
-![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white) 
-
-#### 💾 Databases, Hosting/Storage
-![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)      
-
-#### 📋 Languages
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)    
-
-#### 💻 IDEs/Editors
-![PyCharm](https://img.shields.io/badge/pycharm-143?style=for-the-badge&logo=pycharm&logoColor=black&color=black&labelColor=green)
-![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)    
+![image](https://user-images.githubusercontent.com/33525798/177455609-da9e00a8-560e-45d2-a174-b300e86b18c6.png)
 
 <hr>
 
@@ -49,132 +34,104 @@
 
 ``` Run
 $ pip install -r requirements.txt
-$ python recommandtion/crawling.py  # Crawing Data
-$ python auto_publish.py            # Data Migrations & Run Server
-$ python auto_db_insert.py          # Insert Restaurant DB 
+$ Make 'my_settings.py' from 'ex_my_settings.py
+$ python manage.py makemigrations
+$ python manage.py migrations
+$ python manage.py runserver
 
-# publish branch version 
-$ sh auto_delete_db.sh
-$ sh auto_publish.sh
+# if you apply code convention by black & isort
+$ python auto_cleancode.py
 ```
-
-#### Crawling 
-- 요기요 홈페이지 카테고리별 음식점 데이터 크롤링 (python crawling.py)
-- 생성된 restaurant_OO.csv 파일 (OO 부분은 카테고리, 50개의 음식점 정보 저장)들 합쳐서 최종 restaurant.csv 생성
-
-#### DB Migration & DB 
-- (main Branch) ```python auto_publish.py``` 하여 migrations, migrate 진행
-- (main Branch) ```python auto_db_insert.py``` 하여 크롤링 데이터(restaurant.csv)들 DB에 저장
-- (publish branch) ```sh auto_delete_db.sh``` 하여 migrations, sqlite3 db 초기화
-- (publish branch) ```sh auto_publish.sh``` 하여 DB Migrations 및 크롤링 데이터(restaurant.csv) DB 저장
 
 <hr>
 
 ## 👉 Structure
 ```
-┌─today_lunch
-├── today_lunch         // project
+┌─smops
+├── smops               // project
 │   ├── urls.py       
 │   ├── settings.py     // setting
 │   └── ...
-├── users               // app
+├── art                 // app
 │   ├── models.py       // DB Model - User
-│   ├── views.py
+│   ├── views.py        // View Functions
+│   ├── serializers.py  // Serializers
 │   └── ...
-├── restaurant          // app
+├── mygallery           // app
 │   ├── models.py       // DB Model - Restaurant, Category
-│   ├── views.py
+│   ├── views.py        // View Functions
+│   ├── serializers.py  // Serializers
 │   └── ...
-├── star                // app
+├── ai                  // app + ai GAN
+│   ├── service/        // AI Style Transfer 
 │   ├── models.py       // DB Model - Star 
-│   ├── views.py
+│   ├── views.py        // View Functions
+│   ├── upload.py       // AWS S3 Upload Code 
+│   ├── serializers.py  // Serializers
 │   └── ...
-├── mypage              // app
+├── user                // app
 │   ├── models.py       // DB Model - Diary
-│   ├── views.py
+│   ├── views.py        // View Functions
+│   ├── serializers.py  // Serializers
 │   └── ...
-├── recommandation
-│   ├── crawling.py     // Crawling
-│   ├── db_uploader.py  // Restaurant data insert
-│   ├── recommand.py    // User Based Recommandation
-│   └── restaurant.csv  // restaurant data
-├── static 
-│   ├── css/            // css
-│   └── img/            // images    
-├── templates
-│   ├── init/           // Init Page  
-│   ├── users/          // Join, Login Page  
-│   ├── main/           // Main Page  
-│   ├── mypage/         // Profile Page  
-│   └── ...
+├── media 
+│   └── test_img/       // test img    
 │
-├── db.sqlite3          // DB  
-├── manage.py           // 메인
-├── auto_db_insert.py   
-└── auto_publish.py
+├── **manage.py**           // 메인
+└── requirements.txt
 ```
 
 <hr>
 
 
-## 👉 Development
+## :computer: Development
 
-#### User Page
-- 시작 페이지 회원가입, 로그인 페이지 이동
-- 회원가입/로그인 기능
+#### Login/Join Page
 - 회원가입 vaildation
-- 카카오지도 API를 이용한 주소 검색 기능
+- 로그인 JWT Token 부여
 
-#### Nav Bar
-- 페이지 이동(홈, 평점페이지, 마이페이지, 로그아웃)
+#### 유화 메인 페이지
+- 유화 카테고리 별 조회 : 인물화, 풍경화, 정물화, 동물화
+- 유화 필터링 별 조회
+   - (1) 정렬 : 등록일, 가격 등
+   - (2) 가격 범위 : ~10만원, ~30만원
+   - (3) 그림형태
+- 유화 아티스트 검색
 
-#### Scoring Page
-- **로그인 후 스코어링 페이지 이동**
-- **로그인 User 평점 이력 없는 음식점 5개 출력**
-- **음식점 마다 별 1개 ~ 5개 선택해서 평점 부여 및 저장**
-  - '별점 저장하기' 클릭 시 평점 부여한 음식점들만 평점 등록됨
-  - '평가 그만하기' 클릭 시 메인 페이지로 이동
+#### 유화 상세 페이지
+- 유화 정보 조회
+- 유화 로그 조회 (히스토리)
+- 유화 구매 하기
 
-#### Aside (Main Page, MyPage)
-- **사용자 정보(이름, 주소) 출력**
-- **추천 컨텐츠 1) 오늘의 추천**
-  - 어제 평점이 가장 높았던 음식점 1개 추천
+#### 마이 갤러리 페이지
+- 보유 중인 내 유화 조회
+- 유화 판매 상태로 업데이트 / 삭제
+- 유화 로그 조회 (히스토리)
 
-#### Main Page
-- **추천 컨텐츠 2) '사용자님과 가장 유사한 OOO님의 추천 음식점입니다!'**
-  - User-Baed Filtering을 이용한 나와 가장 비슷한 유저의 top 5 음식점 출력
-  - OOO님 클릭 시 유사도 팝오버 출력
-- **추천 컨텐츠 3) '점심 뭐 먹지? TOP 5'**
-  - 카테고리별 평균 평점이 가장 높은 음식점 TOP 5 (전체, 한식, 중식, 일식, 양식)
-- **각 음식점들의 '상세보기'**
-  - 네이버 지도에 해당 음식점 검색 결과 출력
+#### 유화 만들기 페이지 (AI)
+- Base 이미지, Style 이미지 업로드
+- StyleGAN 모델 학습 (RUN 버튼)
+- 학습 결과 내 유화로 등록
 
-#### Mypage
-- **점심일지 캘린더 형태 출력**
-- **점심일지 등록**
-  - 빈 날짜 호버 시 '등록'버튼 출력, 클릭시 모달 출력
-- **점심일지 등록 모달**
-  - 음식점 선택 (+ 검색 가능) 
-  - 별점 선택 (1 ~ 5)
-  - 등록 내용 바탕으로 DB Update 및 추천 알고리즘 Upgrade
-- **점심일지 수정/삭제**
-  - 등록된 점심일지 부분 클릭시 모달 창 출력
-  - 수정/삭제 내용 바탕으로 DB Update 및 추천 알고리즘 Upgrade
-  - 삭제 클릭시 해당 점심일지 삭제됨
-
-#### Publish and Storage Mount
+#### AWS Infra
 - AWS EC2 이용한 외부 Publish 배포
-- S3에 정적 이미지 파일들 관리 및 EC2에 Mount하여 구현
+- AWS S3 User 이미지 업로드 및 정적 파일 관리 
+- AWS IAM 부여하여 Infra Team 공동 관리
 
 <hr>
 
 ## 👉 시연 화면
-#### 첫화면, 회원가입, 로그인 화면
+#### 회원가입, 로그인 화면
 ![image](https://user-images.githubusercontent.com/33525798/173514356-84840d07-2425-4095-b9fa-07d50a19bc0d.png)
 
-#### 평가 페이지, 메인 페이지
+#### 유화 메인 페이지, 유화 상세 페이지
 ![image](https://user-images.githubusercontent.com/33525798/173514477-228b4897-bee0-491e-847c-5720d11a5eb4.png)
 
-#### 마이페이지 (점심일지 등록, 수정, 삭제)
+#### 마이 갤러리 페이지
 ![image](https://user-images.githubusercontent.com/33525798/173514527-8e456009-0dcb-4e5d-890a-e476ef4331fb.png)
+
+#### 유화 만들기 페이지 (AI)
+![image](https://user-images.githubusercontent.com/33525798/173514527-8e456009-0dcb-4e5d-890a-e476ef4331fb.png)
+
+
 
