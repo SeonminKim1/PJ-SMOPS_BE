@@ -100,32 +100,45 @@ $ python auto_cleancode.py
 
 ## :computer: Development
 
-#### Login/Join Page
+#### 👉 Login/Join Page
 - 회원가입 vaildation
 - 로그인 JWT Token 부여
+- ![image](https://user-images.githubusercontent.com/33525798/177491113-4c7bfeba-a06b-4318-8284-645b2d04ffa4.png)
 
-#### 유화 메인 페이지
+
+#### 👉 유화 메인 페이지
 - 유화 카테고리 별 조회 : 인물화, 풍경화, 정물화, 동물화
 - 유화 필터링 별 조회
    - (1) 정렬 : 등록일, 가격 등
    - (2) 가격 범위 : ~10만원, ~30만원
    - (3) 그림형태
 - 유화 아티스트 검색
+![image](https://user-images.githubusercontent.com/33525798/177491092-a2c4d2d8-fec9-46ad-bb43-9db7761b5c94.png)
 
-#### 유화 상세 페이지
+
+#### 👉 유화 상세 페이지
 - 유화 정보 조회
 - 유화 로그 조회 (히스토리)
 - 유화 구매 하기
+- 시연 화면
+![image](https://user-images.githubusercontent.com/33525798/177491675-803cad93-8ec6-470e-90aa-61da4d945b94.png)
+
 
 #### 마이 갤러리 페이지
 - 보유 중인 내 유화 조회
 - 유화 판매 상태로 업데이트 / 삭제
 - 유화 로그 조회 (히스토리)
+- 시연 화면
+![image](https://user-images.githubusercontent.com/33525798/177492835-9ad05cae-e962-4795-ac32-a4a225aa4836.png)
+
 
 #### 유화 만들기 페이지 (AI)
 - Base 이미지, Style 이미지 업로드
 - StyleGAN 모델 학습 (RUN 버튼)
 - 학습 결과 내 유화로 등록
+- 시연 화면
+![image](https://user-images.githubusercontent.com/33525798/177491166-fcc523d5-d761-4d6f-9bf1-55dc5188695a.png)
+
 
 #### AWS Infra
 - AWS EC2 이용한 외부 Publish 배포
@@ -133,16 +146,3 @@ $ python auto_cleancode.py
 - AWS IAM 부여하여 Infra Team 공동 관리
 
 <hr>
-
-## 👉 시연 화면
-#### 회원가입, 로그인 화면
-![image](https://user-images.githubusercontent.com/33525798/177491113-4c7bfeba-a06b-4318-8284-645b2d04ffa4.png)
-
-#### 유화 메인 페이지, 유화 상세 페이지
-![image](https://user-images.githubusercontent.com/33525798/177491092-a2c4d2d8-fec9-46ad-bb43-9db7761b5c94.png)
-
-#### 마이 갤러리 페이지
-![image](https://user-images.githubusercontent.com/33525798/177491149-06c73637-facf-45cc-88e8-9c964f94f72e.png)
-
-#### 유화 만들기 페이지 (AI)
-![image](https://user-images.githubusercontent.com/33525798/177491166-fcc523d5-d761-4d6f-9bf1-55dc5188695a.png)
