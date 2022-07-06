@@ -22,6 +22,9 @@
 - main : LocalHost 실행 branch
 - publish : EC2 Hosting 실행 Branch
 
+#### Repository Info
+- [SMOPS-FE Project](https://github.com/SeonminKim1/SMOPS-FE)
+
 #### Figma Mock-up
 ![image](https://user-images.githubusercontent.com/33525798/177453735-59c483e0-a638-42fd-bccb-47b1795641a3.png)
 
@@ -33,8 +36,18 @@
 ## 👉 Getting-Started
 
 ``` Run
+## FrontEnd Settings
+$ git clone https://github.com/SeonminKim1/SMOPS-FE
+$ cd SMOPS-FE/
+- Install vscode extensions : Live Server 
+- Run Live Server
+
+## Backend Settings
+$ git clone https://github.com/SeonminKim1/SMOPS-BE
+$ cd SMOPS-BE/
 $ pip install -r requirements.txt
-$ Make 'my_settings.py' from 'ex_my_settings.py
+
+- Make 'my_settings.py' from 'ex_my_settings.py
 $ python manage.py makemigrations
 $ python manage.py migrations
 $ python manage.py runserver
