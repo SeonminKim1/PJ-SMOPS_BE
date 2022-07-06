@@ -317,8 +317,8 @@ class StyleTransfer:
         tv_weight: float = 2.0,
         min_scale: int = 128,
         end_scale: int = 512,  # 512,
-        iterations: int = 1,  # 500
-        initial_iterations: int = 2,  # 1000
+        iterations: int = 100,  # 500
+        initial_iterations: int = 200,  # 1000
         step_size: float = 0.02,
         avg_decay: float = 0.99,
         init: str = "content",
