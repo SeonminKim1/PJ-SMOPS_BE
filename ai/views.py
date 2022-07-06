@@ -33,6 +33,7 @@ class AiProductView(APIView):
 
 # ai/inference/
 class AiCreateProductView(APIView):
+    # 유화제작
     def post(self, request):
         content = request.data["content"]
         style = [request.data["style"]]

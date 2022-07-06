@@ -4,6 +4,7 @@ from .service.cli import main
 from django.utils import timezone
 
 
+
 class UploadProduct():
     def create_product(content, style):
         # input 파일 경로
