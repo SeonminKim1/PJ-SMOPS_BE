@@ -2,7 +2,7 @@ import io
 import boto3
 from .service.cli import main
 from django.utils import timezone
-
+import my_settings
 
 class UploadProduct():
     def create_product(content, style):
@@ -24,8 +24,9 @@ class UploadProduct():
 
     def upload_s3(validated_data):    
         # 파일 업로드
-        s3 = boto3.client("s3")
-        
+        #s3 = boto3.client("s3")
+        s3 = boto3.client('s3', aws_access_key_id = my_settings.AWS_ACCESS_KEY, aws_secret_access_key = my_settings.AWS_ACCESS_SECRET_KEY)
+
         created_user = validated_data["created_user"]
         img_file = validated_data["img_path"]
         
