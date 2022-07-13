@@ -64,3 +64,10 @@ class Log(models.Model):
     class Meta:
         db_table = "LOG"
 
+
+#===============================
+
+class Article(models.Model):
+    title = models.CharField
+    content = models.CharField
+    image = models.FileField(upload_to="", blank=True)

@@ -2,9 +2,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+
 from .serializers import MyGallerySerializer
 
-from art.models import Product as ProductModel
+from art.models import Article, Product as ProductModel
 
 
 # Query Debugger용
@@ -50,3 +51,5 @@ class MyGalleryInfoAPIView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"result": "작품이 삭제되었습니다."}, status=status.HTTP_200_OK)
+    
+    

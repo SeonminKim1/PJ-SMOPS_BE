@@ -10,6 +10,10 @@ from .serializers import ProductsMainSerializer, ProductsDeatilSerializer
 from .models import Product, Category, Log, ImageShape
 from user.models import User
 
+
+from art.serializers import ArticleSerializer
+from art.models import Article
+
 # Query Debugger용
 from _utils.query_utils import query_debugger
 
@@ -163,3 +167,22 @@ class ProductDetailsBuyView(APIView):
         # 3. 로그 추가
         Log.objects.create(product=product, old_owner=user, updated_date= updated_date, old_price=price)
         return Response({'message':'Success'}, status.HTTP_200_OK)
+
+
+
+
+#==============================
+class ArticleView(APIView):
+    def get(self, request):
+        return Response(ArticleSerializer(Article.objects.all(), many=True).data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({"message": "로그인 해주세요!"}, 401)
+        
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "글 작성 완료!"}, 200)
+        else:
+            return Response({"message": f"${serializer.errors}"}, 400)

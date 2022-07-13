@@ -1,4 +1,3 @@
-from urllib import response
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
@@ -66,3 +65,14 @@ class LoginUserTest(APITestCase):
         response = self.client.post(reverse("token_obtain_pair"), self.data_none_email)
         self.assertEqual(response.status_code, 400)
         
+    # 유저 정보 확인
+    def test_get_user_data(self):
+        # 액세스 토큰을 받아와서 HTTP_AUTHORIZATION에 주는 것이 중요!
+        access_token = self.client.post(reverse("token_obtain_pair"), self.data).data['access']
+        response = self.client.get(
+            path=reverse("user_view"),
+            HTTP_AUTHORIZATION = f"Bearer {access_token}"
+        )
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['email'], self.data['email'])

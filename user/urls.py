@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from user.views import OnlyAuthenticatedUserView
 
-# user/
+# user/token_obtain_pair
 urlpatterns = [
     path('', views.UserAPIView.as_view(), name="user_view"),
     path('api/token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),

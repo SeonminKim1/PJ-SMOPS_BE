@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from art.models import Category as CategoryModel, Product
+from art.models import Category as CategoryModel, Product, Article
 from art.models import Product as ProductModel
 from art.models import Log as LogModel
 from art.models import ImageShape
@@ -67,3 +67,11 @@ class ProductsDeatilSerializer(serializers.ModelSerializer):
                   "img_path", "img_shape",
                   "category", "title", "description",
                   "price", "is_selling", "created_date","log"]
+        
+        
+# ==================
+
+class ArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = "__all__"
